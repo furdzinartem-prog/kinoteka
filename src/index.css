@@ -1,0 +1,118 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background-color: #0b0c10;
+  color: #ffffff;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background: rgba(11, 12, 16, 0.9);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header-logo { font-weight: bold; font-size: 24px; color: #f2a900; }
+.header-nav { display: flex; gap: 20px; }
+.header-nav a { color: #c5c6c7; text-decoration: none; transition: 0.3s; }
+.header-nav a:hover { color: #fff; }
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  background: linear-gradient(to bottom, #1f2833, #0b0c10);
+  text-align: center;
+}
+.tv-logo {
+  width: 120px;
+  height: auto;
+  margin-bottom: 20px;
+}
+.hero h1 {
+  font-size: 48px;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+.hero h1 span { color: #f2a900; }
+.hero-tagline {
+  color: #c5c6c7;
+  font-size: 18px;
+  margin-bottom: 30px;
+}
+.search-bar {
+  display: flex;
+  width: 100%;
+  max-width: 600px;
+}
+.search-bar input {
+  flex: 1;
+  padding: 15px 20px;
+  border-radius: 30px 0 0 30px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+.search-bar button {
+  padding: 15px 30px;
+  border-radius: 0 30px 30px 0;
+  border: none;
+  background-color: #f2a900;
+  color: #0b0c10;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.search-bar button:hover { background-color: #d19200; }
+
+.movie-section {
+  padding: 40px;
+}
+.movie-section h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+.movie-card {
+  background-color: #1f2833;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.3s;
+  cursor: pointer;
+}
+.movie-card:hover { transform: scale(1.05); }
+.movie-cover {
+  width: 100%;
+  height: 300px;
+  background-color: #2c3540;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+}
+.movie-info { padding: 15px; }
+.movie-title { font-size: 16px; font-weight: bold; margin-bottom: 5px; }
+.movie-genre { font-size: 14px; color: #c5c6c7; }
