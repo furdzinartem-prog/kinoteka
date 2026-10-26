@@ -1,40 +1,124 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import MovieSection from './components/MovieSection';
+import MovieModal from './components/MovieModal';
+import { api } from './api';
 
-// 1. Моковые (тестовые) данные
-const mockMovies = [
-  { id: 1, title: 'Холоп' },
-  { id: 2, title: 'Лед 2' },
-  { id: 3, title: 'Марафон желаний' },
-  { id: 4, title: 'Джульбарс' },
-  { id: 5, title: 'Трансформеры' }
-];
+const GENRES = ['Все', 'комедия', 'драма', 'фантастика', 'триллер', 'боевик'];
 
 function App() {
+  const [movies, setMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedGenre, setSelectedGenre] = useState('Все');
+  const [favorites, setFavorites] = useState([]);
+  const [selectedMovieId, setSelectedMovieId] = useState(null);
 
-  // 2. Эмуляция поиска: фильтруем моковые данные по запросу
-  const filteredMovies = mockMovies.filter(movie => 
-    movie.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const handleSearch = (query) => {
-    setSearchQuery(query);
+  const loadTopMovies = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await api.getTopMovies();
+      setMovies(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const sectionTitle = searchQuery 
-    ? `Результаты поиска: ${searchQuery}` 
-    : "🔥 Популярные фильмы";
+  useEffect(() => {
+    loadTopMovies();
+  }, []); 
+
+
+  const handleSearch = async (query) => {
+    setSearchQuery(query);
+    if (!query) {
+      loadTopMovies(); 
+      return;
+    }
+    
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await api.searchMovies(query);
+      setMovies(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const toggleFavorite = (id) => {
+    setFavorites(prev => 
+      prev.includes(id) ? prev.filter(favId => favId !== id) : [...prev, id]
+    );
+  };
+
+  
+  const filteredMovies = selectedGenre === 'Все' 
+    ? movies 
+    : movies.filter(m => m.genres.includes(selectedGenre.toLowerCase()));
 
   return (
     <div className="app">
       <Header />
-      <Hero onSearch={handleSearch} />
+      <Hero onSearch={handleSearch} isLoading={isLoading} />
       
       
-      <MovieSection title={sectionTitle} movies={filteredMovies} />
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', flexWrap: 'wrap', padding: '20px' }}>
+        {GENRES.map(genre => (
+          <button 
+            key={genre} 
+            onClick={() => setSelectedGenre(genre)}
+            style={{ 
+              padding: '8px 16px', 
+              background: selectedGenre === genre ? '#ffcc00' : '#333', 
+              color: selectedGenre === genre ? '#000' : '#fff', 
+              border: 'none', borderRadius: '20px', cursor: 'pointer', fontWeight: 'bold' 
+            }}
+          >
+            {genre.charAt(0).toUpperCase() + genre.slice(1)}
+          </button>
+        ))}
+      </div>
+
+      {isLoading && <h2 style={{textAlign: 'center', color: '#ffcc00'}}>⏳ Ищем фильмы...</h2>}
+      
+      
+      {error && (
+        <div style={{textAlign: 'center', color: '#ff6b6b', margin: '20px'}}>
+          <p>Ошибка: {error}</p>
+          <button onClick={searchQuery ? () => handleSearch(searchQuery) : loadTopMovies} style={{ padding: '10px', borderRadius: '5px', cursor: 'pointer' }}>
+            Повторить запрос
+          </button>
+        </div>
+      )}
+
+      
+      {!isLoading && !error && filteredMovies.length === 0 && (
+        <h2 style={{textAlign: 'center', color: '#aaa'}}>По вашему запросу ничего не найдено 😔</h2>
+      )}
+
+      {!isLoading && !error && filteredMovies.length > 0 && (
+        <MovieSection 
+          title={searchQuery ? `Результаты поиска: ${searchQuery}` : "🔥 Популярные фильмы"} 
+          movies={filteredMovies}
+          favorites={favorites}
+          onToggleFavorite={toggleFavorite}
+          onCardClick={setSelectedMovieId}
+        />
+      )}
+
+      
+      {selectedMovieId && (
+        <MovieModal id={selectedMovieId} onClose={() => setSelectedMovieId(null)} />
+      )}
     </div>
   );
 }

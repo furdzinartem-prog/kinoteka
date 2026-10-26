@@ -1,13 +1,19 @@
 import React from 'react';
 import MovieCard from './MovieCard';
 
-function MovieSection({ title, movies }) {
+function MovieSection({ title, movies, favorites, onToggleFavorite, onCardClick }) {
   return (
     <section className="movie-section">
-      <h2>{title} <span style={{fontSize: '14px', color: '#c5c6c7', cursor: 'pointer'}}>Смотреть все →</span></h2>
+      <h2>{title}</h2>
       <div className="movie-grid">
         {movies.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
+          <MovieCard 
+            key={movie.id} 
+            movie={movie} 
+            isFavorite={favorites.includes(movie.id)}
+            onToggleFavorite={() => onToggleFavorite(movie.id)}
+            onClick={() => onCardClick(movie.id)}
+          />
         ))}
       </div>
     </section>
