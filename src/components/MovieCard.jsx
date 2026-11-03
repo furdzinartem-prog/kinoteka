@@ -1,6 +1,15 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleFavorite } from '../store/movieSlice';
 
-function MovieCard({ movie, isFavorite, onToggleFavorite, onClick }) {
+function MovieCard({ movie, onClick }) {
+  const dispatch = useDispatch();
+  
+  // Проверяем, есть ли этот фильм в глобальном стейте избранного
+  const isFavorite = useSelector(state => 
+    state.movies.favorites.some(fav => fav.id === movie.id)
+  );
+
   return (
     <div className="movie-card" style={{ position: 'relative', cursor: 'pointer', overflow: 'hidden', borderRadius: '10px', backgroundColor: '#222' }}>
       <div 
@@ -9,7 +18,7 @@ function MovieCard({ movie, isFavorite, onToggleFavorite, onClick }) {
       ></div>
       
       <button 
-        onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleFavorite(); }}
+        onClick={(e) => { e.preventDefault(); e.stopPropagation(); dispatch(toggleFavorite(movie)); }}
         style={{
           position: 'absolute', top: '10px', right: '10px', background: 'rgba(0,0,0,0.6)',
           border: 'none', color: isFavorite ? '#ffcc00' : 'white', fontSize: '24px', cursor: 'pointer', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', justifyContent: 'center', alignItems: 'center'

@@ -17,8 +17,9 @@ async function fetchClient(endpoint) {
 }
 
 export const api = {
-  getTopMovies: async () => {
-    const data = await fetchClient('/v2.2/films/collections?type=TOP_POPULAR_ALL&page=1');
+  // Теперь функция принимает тип: TOP_POPULAR_ALL (фильмы) или TOP_250_TV_SHOWS (сериалы)
+  getTopMovies: async (type = 'TOP_POPULAR_ALL') => {
+    const data = await fetchClient(`/v2.2/films/collections?type=${type}&page=1`);
     return data.items.map(f => ({
       id: f.kinopoiskId,
       title: f.nameRu || f.nameOriginal,
@@ -26,7 +27,6 @@ export const api = {
       genres: f.genres?.map(g => g.genre) || []
     }));
   },
-  
   searchMovies: async (query) => {
     const data = await fetchClient(`/v2.1/films/search-by-keyword?keyword=${query}`);
     return data.films.map(f => ({
@@ -36,8 +36,6 @@ export const api = {
       genres: f.genres?.map(g => g.genre) || []
     }));
   },
-  
   getMovieDetails: (id) => fetchClient(`/v2.2/films/${id}`),
-  
   getMovieStaff: (id) => fetchClient(`/v1/staff?filmId=${id}`)
 };
