@@ -1,16 +1,23 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { IMovie } from '../types';
 
-const initialState = {
+interface IMovieState {
+  favorites: IMovie[];
+  contentType: string;
+  savedMoviesData: IMovie[];
+}
+
+const initialState: IMovieState = {
   favorites: [],
-  contentType: 'TOP_POPULAR_ALL', // по умолчанию грузим популярные фильмы
-  savedMoviesData: [], // Чтобы избранные фильмы отображались на отдельной странице
+  contentType: 'TOP_POPULAR_ALL',
+  savedMoviesData: [],
 };
 
 const movieSlice = createSlice({
   name: 'movies',
   initialState,
   reducers: {
-    toggleFavorite: (state, action) => {
+    toggleFavorite: (state, action: PayloadAction<IMovie>) => {
       const movie = action.payload;
       const exists = state.favorites.find(fav => fav.id === movie.id);
       if (exists) {
@@ -19,7 +26,7 @@ const movieSlice = createSlice({
         state.favorites.push(movie);
       }
     },
-    setContentType: (state, action) => {
+    setContentType: (state, action: PayloadAction<string>) => {
       state.contentType = action.payload;
     }
   },

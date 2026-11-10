@@ -1,30 +1,28 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
-import MovieModal from './components/MovieModal';
 import HomePage from './pages/HomePage';
 import FavoritesPage from './pages/FavoritesPage';
 import NotFoundPage from './pages/NotFoundPage';
+import Modal from './components/Modal';
 
 function App() {
-  const [selectedMovieId, setSelectedMovieId] = useState(null);
+  const [selectedMovieId, setSelectedMovieId] = useState<number | null>(null);
 
   return (
-    <div className="app">
+    <>
       <Header />
-      
-      {/* Настройка маршрутов (React Router) */}
       <Routes>
         <Route path="/" element={<HomePage onOpenModal={setSelectedMovieId} />} />
         <Route path="/favorites" element={<FavoritesPage onOpenModal={setSelectedMovieId} />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-
-      {/* Модалка общая для всех страниц */}
-      {selectedMovieId && (
-        <MovieModal id={selectedMovieId} onClose={() => setSelectedMovieId(null)} />
+      
+      {/* Если selectedMovieId не null, рендерим модалку */}
+      {selectedMovieId !== null && (
+        <Modal movieId={selectedMovieId} onClose={() => setSelectedMovieId(null)} />
       )}
-    </div>
+    </>
   );
 }
 
