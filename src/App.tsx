@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage';
 import FavoritesPage from './pages/FavoritesPage';
 import NotFoundPage from './pages/NotFoundPage';
 import Modal from './components/Modal';
+import './App.css';
 
 function App() {
   const [selectedMovieId, setSelectedMovieId] = useState<number | null>(null);
@@ -18,7 +19,6 @@ function App() {
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       
-      {/* Если selectedMovieId не null, рендерим модалку */}
       {selectedMovieId !== null && (
         <Modal movieId={selectedMovieId} onClose={() => setSelectedMovieId(null)} />
       )}
